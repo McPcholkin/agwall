@@ -1,0 +1,6 @@
+id=agwall
+name=AGWall iptables wrapper
+version=Ver: 0.0.1
+versionCode=1
+author=Upya4ko
+description=This is simple solution to replace firewall on android device, it use pure iptables to control apps to acces to internet.
