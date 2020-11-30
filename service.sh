@@ -97,10 +97,13 @@ applyShelterRules () {
     for appName in $shelterList; do
       local appId=$(su -c dumpsys package $appName | grep 'userId=' | cut -f 2 -d '=' )  
       local appIdShelter="10$appId"
-      $debug $ipt -A $chain -m owner --uid-owner $appIdShelter -j ACCEPT
+        # if app not exist skip
+        if [ $appIdShelter != 10]
+          $debug $ipt -A $chain -m owner --uid-owner $appIdShelter -j ACCEPT
 
-      if [ $ipv6 == True ]; then
-        $debug $ip6t -A $chain -m owner --uid-owner $appIdShelter -j ACCEPT
+          if [ $ipv6 == True ]; then
+            $debug $ip6t -A $chain -m owner --uid-owner $appIdShelter -j ACCEPT
+          fi
       fi
 
     done
