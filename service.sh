@@ -2,8 +2,8 @@
 
 ipv6=False
 #ipv6=True
-debug='su -c '
-#debug='echo '
+#debug='su -c '
+debug='echo '
 whereiam=$(dirname "$0")
 listDir="$whereiam/lst"
 tablesDir="$listDir/tables"
@@ -98,14 +98,13 @@ applyShelterRules () {
       local appId=$(su -c dumpsys package $appName | grep 'userId=' | cut -f 2 -d '=' )  
       local appIdShelter="10$appId"
         # if app not exist skip
-        if [ $appIdShelter != 10]
+        if [ $appIdShelter != 10 ] ; then
           $debug $ipt -A $chain -m owner --uid-owner $appIdShelter -j ACCEPT
 
           if [ $ipv6 == True ]; then
             $debug $ip6t -A $chain -m owner --uid-owner $appIdShelter -j ACCEPT
           fi
-      fi
-
+        fi
     done
   done
 }
