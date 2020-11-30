@@ -18,6 +18,12 @@ disableBaseRules () {
   tableList=$(ls $tablesDir)
   for table in $tableList; do
     for chain in INPUT OUTPUT FORWARD; do 
+
+      $debug $ipt -t $table -P $chain ACCEPT
+      if [ $ipv6 == True ]; then
+        $debug $ip6t -t $table -P $chain ACCEPT
+      fi
+      
       for rule in agwall-out agwall-inp; do
         $debug $ipt -t $table -D $chain -j $rule
         if [ $ipv6 == True ]; then
