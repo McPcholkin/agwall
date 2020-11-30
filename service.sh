@@ -2,8 +2,8 @@
 
 ipv6=False
 #ipv6=True
-#debug='su -c '
-debug='echo '
+debug='su -c '
+#debug='echo '
 whereiam=$(dirname "$0")
 listDir="$whereiam/lst"
 tablesDir="$listDir/tables"

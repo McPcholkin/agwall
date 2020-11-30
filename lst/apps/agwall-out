@@ -2,7 +2,7 @@ com.topjohnwu.magisk
 org.schabi.newpipe
 org.telegram.messenger
 org.fdroid.fdroid
-com.cookiegames.smartcookie
+com.stoutner.privacybrowser.standard
 org.adaway
 com.tobykurien.webapps
 org.sufficientlysecure.termbot
@@ -12,4 +12,5 @@ eu.faircode.email
 dkc.video.hdbox
 de.tutao.tutanota
 net.osmand.plus
+org.courville.nova
 
