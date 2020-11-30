@@ -8,7 +8,8 @@ make_magisk_module:
 	service.sh \
 	lst \
 	dumpIptables.sh \
-	logAGWall.sh 
+	logAGWall.sh \
+	stopAGWall.sh
 
 push:
 	adb push agwall.zip /sdcard/
