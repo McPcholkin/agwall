@@ -2,7 +2,7 @@
 
 ipv6=False
 #ipv6=True
-debug=''
+debug='su -c '
 #debug='echo '
 whereiam=$(dirname "$0")
 listDir="$whereiam/lst"
@@ -28,14 +28,14 @@ createTables () {
     for chain in $rulesList; do
       # cut .sh
       chainName="${chain%.*}"
-      if [ $chain != $table ]; then
-        su -c $debug $ipt -t $table -F $chainName
-        su -c $debug $ipt -t $table -X $chainName
-        su -c $debug $ipt -t $table -N $chainName
+      if [ $chainName != $table ]; then
+        $debug $ipt -t $table -F $chainName
+        $debug $ipt -t $table -X $chainName
+        $debug $ipt -t $table -N $chainName
         if [ $ipv6 == True ]; then
-          su -c $debug $ip6t -t $table -F $chainName
-          su -c $debug $ip6t -t $table -X $chainName
-          su -c $debug $ip6t -t $table -N $chainName
+          $debug $ip6t -t $table -F $chainName
+          $debug $ip6t -t $table -X $chainName
+          $debug $ip6t -t $table -N $chainName
         fi
 
       fi
@@ -51,7 +51,7 @@ applyBaseRules () {
     
     for chain in $rulesList; do 
      chainPath="$rulesDir/$chain"
-     su -c $chainPath
+     $debug $chainPath
     done
   done
 }
@@ -60,7 +60,7 @@ applyPatches () {
   patchesList=$(ls $patchesDir | sort )
   for patch in $patchesList; do
     patchPath="$patchesDir/$patch"
-    su -c $patchPath
+    $debug $patchPath
   done
 }
 
@@ -68,7 +68,7 @@ applyUserScripts () {
   userScriptList=$(ls $userScriptDir | sort )
   for userScript in $userScriptList; do
     userScriptPath="$userScriptDir/$userScript"
-    su -c  $userScriptPath
+    $debug $userScriptPath
   done
 }
 
@@ -79,10 +79,10 @@ applyAppsRules () {
     local appList=$(cat $appChainsDir/$chain)
     for appName in $appList; do
       local appId=$(su -c dumpsys package $appName | grep 'userId=' | cut -f 2 -d '=' )  
-      su -c $debug $ipt -A $chain -m owner --uid-owner $appId -j ACCEPT
+      $debug $ipt -A $chain -m owner --uid-owner $appId -j ACCEPT
 
       if [ $ipv6 == True ]; then
-        su -c $debug $ip6t -A $chain -m owner --uid-owner $appId -j ACCEPT
+        $debug $ip6t -A $chain -m owner --uid-owner $appId -j ACCEPT
       fi
 
     done
@@ -97,10 +97,10 @@ applyShelterRules () {
     for appName in $shelterList; do
       local appId=$(su -c dumpsys package $appName | grep 'userId=' | cut -f 2 -d '=' )  
       local appIdShelter="10$appId"
-      su -c $debug $ipt -A $chain -m owner --uid-owner $appIdShelter -j ACCEPT
+      $debug $ipt -A $chain -m owner --uid-owner $appIdShelter -j ACCEPT
 
       if [ $ipv6 == True ]; then
-        su -c $debug $ip6t -A $chain -m owner --uid-owner $appIdShelter -j ACCEPT
+        $debug $ip6t -A $chain -m owner --uid-owner $appIdShelter -j ACCEPT
       fi
 
     done
@@ -110,18 +110,15 @@ applyShelterRules () {
 
 echo "=== createTables ==="
 createTables
-echo " ===  done   ==="
-echo "=== applyPatches ==="
+echo " ===  done   ===" ; echo "=== applyPatches ==="
 applyPatches
-echo " ===  done   ==="
-echo "=== applyUserScripts ==="
+echo " ===  done   ===" ; echo "=== applyUserScripts ==="
 applyUserScripts
-echo " ===  done   ==="
-echo "=== applyAppsRules ==="
+echo " ===  done   ===" ; echo "=== applyAppsRules ==="
 applyAppsRules
-echo " ===  done   ==="
-echo "=== applyBaseRules ==="
+echo " ===  done   ===" ; echo "=== applyShelterRules ==="
 applyShelterRules
+echo " ===  done   ===" ; echo "=== applyBaseRules ==="
 applyBaseRules
 echo " ===  done   ==="
 exit 0
