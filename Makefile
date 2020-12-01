@@ -1,18 +1,14 @@
-make_magisk_module: 
-	zip -r agwall.zip \
-	META-INF \
-    LICENSE \
-	README.md \
-	module.prop \
-	customize.sh \
-	service.sh \
-	lst \
-	dumpIptables.sh \
-	logAGWall.sh \
-	stopAGWall.sh
+magiskModuleName = $(shell basename `pwd`)
 
-push:
-	adb push agwall.zip /sdcard/
+all: clean make-magisk-module adb-push
+.PHONY: all
+
+make-magisk-module: 
+	zip -r ${magiskModuleName}.zip ./* --exclude .gitignore Makefile \*.zip .git/
+
+adb-push:
+	adb push ${magiskModuleName}.zip /sdcard/magiskModules/
 
 clean: 
-	rm agwall.zip
+	rm ${magiskModuleName}.zip
+

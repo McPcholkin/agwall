@@ -13,6 +13,7 @@ inputPortsList=(
 53
 853
 22
+993
 )
 
 ipt=/system/bin/iptables
