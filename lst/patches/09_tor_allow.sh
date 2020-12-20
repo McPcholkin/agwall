@@ -1,7 +1,7 @@
 #!/bin/sh
 
-#ipv6=False
-ipv6=True
+ipv6=False
+#ipv6=True
 debug=''
 #debug='echo '
 
@@ -11,18 +11,14 @@ if [ $ipv6 == True ]; then
   ip6t=/system/bin/ip6tables
 fi
 
-for chain in agwall-out agwall-inp ; do
-  $debug $ipt -A $chain -i lo -j ACCEPT 
-  $debug $ipt -A $chain -o lo -j ACCEPT 
-  
-  $debug $ipt -A $chain -s 127.0.0.1 -d 127.0.0.1 -j ACCEPT
-
-  if [ $ipv6 == True ]; then
-    $debug $ip6t -A $chain -i lo -j ACCEPT
-    $debug $ip6t -A $chain -o lo -j ACCEPT
-
-    $debug $ip6t -A $chain -s ::1 -d ::1 -j ACCEPT
-  fi
+for chain in agwall-out ; do
+  for mark in '0x64' '0x30064' ; do
+    $debug $ipt -A $chain -m mark --mark $mark -j ACCEPT
+ 
+    if [ $ipv6 == True ]; then
+      $debug $ip6t -A $chain -m mark --mark $mark -j ACCEPT
+    fi
+  done
 done
 
 
